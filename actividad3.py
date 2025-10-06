@@ -1,46 +1,35 @@
-# ecorunner.py
-# Nivel 3 — “EcoRunner”
-# Objetivo: Crear un minijuego tipo runner con niveles, velocidad progresiva y pantallas de inicio/final.
-
 import pygame, random
 pygame.init()
 
-# Configuración básica
 ANCHO, ALTO = 800, 400
 pantalla = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption("EcoRunner")
 reloj = pygame.time.Clock()
 fuente = pygame.font.Font(None, 40)
 
-# Colores
 VERDE = (0, 200, 0)
 GRIS = (80, 80, 80)
 FONDO = (200, 255, 200)
 NEGRO = (0, 0, 0)
 
-# Jugador y variables de salto
 jugador = pygame.Rect(100, 300, 40, 40)
 salto = False
 velocidad_salto = 0
 
-# Obstáculos y puntaje
 obstaculos = []
 puntos = 0
 velocidad = 8
 nivel = 1
 
-# Estados del juego
 pantalla_inicio = True
 game_over = False
 corriendo = True
 
-# Función para mostrar texto centrado
 def mostrar_texto(texto, tamano, color, y):
     fuente_tmp = pygame.font.Font(None, tamano)
     render = fuente_tmp.render(texto, True, color)
     pantalla.blit(render, ((ANCHO - render.get_width()) // 2, y))
 
-# Bucle principal
 en_juego = False
 while corriendo:
     for e in pygame.event.get():
@@ -70,7 +59,6 @@ while corriendo:
                 velocidad_salto = -15
 
     if en_juego:
-        # Movimiento del salto
         if salto:
             jugador.y += velocidad_salto
             velocidad_salto += 1
@@ -78,29 +66,26 @@ while corriendo:
                 jugador.y = 300
                 salto = False
 
-        # Generar obstáculos
         if random.randint(1, 40) == 1:
             obstaculos.append(pygame.Rect(ANCHO, 320, 20, 30))
 
-        # Mover obstáculos y sumar puntos
         for o in list(obstaculos):
             o.x -= velocidad
             if o.x < 0:
                 obstaculos.remove(o)
                 puntos += 1
 
-        # Incrementar dificultad por niveles
-        if puntos > 0 and puntos % 20 == 0:
-            nivel = (puntos // 20) + 1
-            velocidad = 8 + nivel * 2  # aumenta velocidad cada 20 puntos
 
-        # Colisiones
+        if puntos > 0 and puntos % 20 == 0:
+            nivel = (puntos // 10) + 1
+            velocidad = 8 + nivel * 2 
+
         for o in obstaculos:
             if jugador.colliderect(o):
                 en_juego = False
                 game_over = True
 
-        # Dibujar
+        
         pantalla.fill(FONDO)
         pygame.draw.rect(pantalla, VERDE, jugador)
         for o in obstaculos:
