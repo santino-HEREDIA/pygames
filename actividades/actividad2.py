@@ -1,16 +1,9 @@
-# stop_co.py
-# Objetivo: usar movimiento automático, colisiones, puntaje y música de fondo.
-
-import pygame
+actvidadimport pygame
 import random
 import os
 
-# ----------------------
-# 1. Configurar Pygame
-# ----------------------
 pygame.init()
 
-# Inicializar mezclador para música
 try:
     pygame.mixer.init()
     MIXER_OK = True
@@ -23,16 +16,10 @@ pygame.display.set_caption("Stop CO")
 fuente = pygame.font.Font(None, 36)
 reloj = pygame.time.Clock()
 
-# ----------------------
-# 2. Crear elementos
-# ----------------------
 auto = pygame.Rect(300, 350, 50, 30)
 humo = pygame.Rect(random.randint(0, WIDTH - 20), 0, 20, 20)
 puntos = 0
 
-# ----------------------
-# 3. Música de fondo
-# ----------------------
 MUSIC_FILE = "background.mp3"  # Archivo MP3 en la misma carpeta
 if MIXER_OK and os.path.exists(MUSIC_FILE):
     try:
@@ -43,21 +30,16 @@ if MIXER_OK and os.path.exists(MUSIC_FILE):
 else:
     print(f"Aviso: no se encontró '{MUSIC_FILE}' o el mezclador falló.")
 
-# ----------------------
-# 4. Variables de control
-# ----------------------
+
 corriendo = True
 game_over = False
 
-# Colores
 COLOR_CIELO = (180, 220, 255)
 COLOR_AUTO = (0, 200, 0)
 COLOR_HUMO = (80, 80, 80)
 COLOR_TEXTO = (0, 0, 0)
 
-# ----------------------
-# 5. Bucle principal
-# ----------------------
+
 while corriendo:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
@@ -72,44 +54,36 @@ while corriendo:
                 corriendo = False
 
     if not game_over:
-        # Movimiento del auto
         teclas = pygame.key.get_pressed()
         if teclas[pygame.K_LEFT]:
             auto.x -= 5
         if teclas[pygame.K_RIGHT]:
             auto.x += 5
 
-        # Limitar movimiento
         auto.x = max(0, min(auto.x, WIDTH - auto.width))
 
-        # Movimiento automático del humo
         humo.y += 5
         if humo.y > HEIGHT:
             humo.y = 0
             humo.x = random.randint(0, WIDTH - humo.width)
             puntos += 1
 
-        # Colisión
         if auto.colliderect(humo):
             print("💨 ¡Contaminación detectada!")
-            puntos = +1
+            puntos += 1
             humo.y = 0
             humo.x = random.randint(0, WIDTH - humo.width)
 
-        # Final del juego
         if puntos >= 10:
             game_over = True
 
-    # Dibujar en pantalla
     pantalla.fill(COLOR_CIELO)
     pygame.draw.rect(pantalla, COLOR_AUTO, auto)
     pygame.draw.rect(pantalla, COLOR_HUMO, humo)
 
-    # Puntaje
     texto = fuente.render(f"Puntos: {puntos}", True, COLOR_TEXTO)
     pantalla.blit(texto, (10, 10))
 
-    # Mensaje final
     if game_over:
         overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 160))
