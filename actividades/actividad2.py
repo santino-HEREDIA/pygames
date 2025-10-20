@@ -1,4 +1,4 @@
-actvidadimport pygame
+import pygame
 import random
 import os
 
