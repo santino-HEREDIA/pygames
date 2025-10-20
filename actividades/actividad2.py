@@ -1,4 +1,4 @@
-actvidadimport pygame
+import pygame
 import random
 import os
 
@@ -67,6 +67,11 @@ while corriendo:
             humo.y = 0
             humo.x = random.randint(0, WIDTH - humo.width)
             puntos += 1
+
+        if humo.y > HEIGHT:
+            humo.y = 0
+            humo.x = random.randint(0, WIDTH - humo.width)
+            puntos -= 1
 
         if auto.colliderect(humo):
             print("💨 ¡Contaminación detectada!")
